@@ -17,6 +17,7 @@
   },
   "scripts": {
     "watch": "nodemon -w src/input.css -x \"npx tailwindcss -i ./src/input.css -o ./src/output.css\"",
-    "server": "nodemon server.js"
+    "start": "node server.js",
+  "dev": "nodemon server.js"
   }
 }
