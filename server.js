@@ -12,7 +12,14 @@
     console.log('DB connection error:',err);
  })
 
-
+ app.get("/", (req, res) => {
+   res.send("Server is running!");
+ });
+ 
+ app.post("/api/mektup", (req, res) => {
+   res.json({ message: "Mektup başarıyla alındı!" });
+ });
+ 
 
 
   const port= process.env.PORT || 8080;
