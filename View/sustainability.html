@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sustainability Profile</title>
+    <link rel="stylesheet" href="./../src/output.css">
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto p-4">
+        <h1 class="text-2xl font-bold">Sustainability Data</h1>
+
+        <!-- World Average Values -->
+        <div class="grid grid-cols-3 gap-4 mt-4">
+            <div class="bg-white p-4 rounded-lg shadow">
+                <h2 class="text-xl">World Average Carbon Footprint</h2>
+                <p>4.5 tons/year</p>
+            </div>
+            <div class="bg-white p-4 rounded-lg shadow">
+                <h2 class="text-xl">World Average Electricity Usage</h2>
+                <p>3500 kWh/year</p>
+            </div>
+            <div class="bg-white p-4 rounded-lg shadow">
+                <h2 class="text-xl">World Average Water Usage</h2>
+                <p>1500 m³/year</p>
+            </div>
+        </div>
+
+        <!-- User's Sustainability Form -->
+        <form id="sustainability-form" class="mt-8">
+            <div class="mb-4">
+                <label for="carbonFootprint" class="block">Carbon Footprint (tons/year):</label>
+                <input type="number" id="carbonFootprint" class="w-full p-2 border rounded" required />
+            </div>
+            <div class="mb-4">
+                <label for="electricityUsage" class="block">Electricity Usage (kWh/year):</label>
+                <input type="number" id="electricityUsage" class="w-full p-2 border rounded" required />
+            </div>
+            <div class="mb-4">
+                <label for="waterUsage" class="block">Water Usage (m³/year):</label>
+                <input type="number" id="waterUsage" class="w-full p-2 border rounded" required />
+            </div>
+            <div class="mb-4">
+                <label for="recyclingRate" class="block">Recycling Rate (%):</label>
+                <input type="number" id="recyclingRate" class="w-full p-2 border rounded" required />
+            </div>
+            <div class="mb-4">
+                <label for="renewableEnergyUsage" class="block">Renewable Energy Usage (%):</label>
+                <input type="number" id="renewableEnergyUsage" class="w-full p-2 border rounded" required />
+            </div>
+            <div class="mb-4">
+                <label for="foodWaste" class="block">Food Waste (kg/year):</label>
+                <input type="number" id="foodWaste" class="w-full p-2 border rounded" required />
+            </div>
+            <button type="submit" class="bg-blue-500 text-white p-2 rounded">Submit Data</button>
+        </form>
+
+        <div id="user-data" class="mt-8">
+            <h2 class="text-xl font-bold">Your Sustainability Data</h2>
+            <div id="data-cards" class="grid grid-cols-1 gap-4 mt-4"></div>
+        </div>
+    </div>
+
+    <script>
+document.getElementById('sustainability-form').addEventListener('submit', async (e) => {
+    e.preventDefault(); // Formun varsayılan davranışını durdur
+
+    // Formdaki verileri al
+    const data = {
+        carbonFootprint: document.getElementById('carbonFootprint').value,
+        electricityUsage: document.getElementById('electricityUsage').value,
+        waterUsage: document.getElementById('waterUsage').value,
+        recyclingRate: document.getElementById('recyclingRate').value,
+        renewableEnergyUsage: document.getElementById('renewableEnergyUsage').value,
+        foodWaste: document.getElementById('foodWaste').value,
+    };
+
+    try {
+        // POST işlemi (Verileri kaydet)
+        const response = await fetch('http://127.0.0.1:3000/api/v1/save-sustainability-data', {
+            method: 'POST',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+        });
+
+        if (!response.ok) {
+            throw new Error('Veri kaydedilemedi!');
+        }
+
+        alert('Veriler başarıyla kaydedildi!');
+
+        // Verileri GET ile tekrar al ve güncelle
+        fetchSustainabilityData();
+    } catch (error) {
+        console.error('Hata:', error);
+        alert('Bir hata oluştu.');
+    }
+});
+
+// Sayfa yüklendiğinde veya POST işleminden sonra GET işlemi
+async function fetchSustainabilityData() {
+    try {
+        // GET işlemi (Verileri çek)
+        const response = await fetch('http://127.0.0.1:3000/api/v1/get-sustainability-data');
+
+        if (!response.ok) {
+            throw new Error('Veri alınamadı!');
+        }
+
+        const data = await response.json();
+        const dataContainer = document.getElementById('data-cards');
+
+        // Mevcut kartları temizle
+        dataContainer.innerHTML = '';
+
+        // Yeni verileri ekle
+        data.forEach((item) => {
+            const card = document.createElement('div');
+            card.classList.add('bg-white', 'p-4', 'rounded-lg', 'shadow');
+            card.innerHTML = `
+                <p>Carbon Footprint: ${item.carbonFootprint} tons/year</p>
+                <p>Electricity Usage: ${item.electricityUsage} kWh/year</p>
+                <p>Water Usage: ${item.waterUsage} m³/year</p>
+                <p>Recycling Rate: ${item.recyclingRate}%</p>
+                <p>Renewable Energy Usage: ${item.renewableEnergyUsage}%</p>
+                <p>Food Waste: ${item.foodWaste} kg/year</p>
+                <p>Created At: ${new Date(item.createdAt).toLocaleDateString()}</p>
+            `;
+            dataContainer.appendChild(card);
+        });
+    } catch (error) {
+        console.error('Hata:', error);
+        alert('Veriler alınırken bir hata oluştu.');
+    }
+}
+
+    </script>
+</body>
+</html>

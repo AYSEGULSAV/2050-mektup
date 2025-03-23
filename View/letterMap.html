@@ -1,0 +1,29 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harita</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="./../src/output.css">
+</head>
+<body class="h-screen ">
+    <div class="w-full h-full bg-[#E9E49E] flex items-center justify-center ">
+            <header class="w-full h-1/12  fixed top-0 left-0 z-50  bg-[#297040] ">
+        <!-- Header içeriği -->
+    </header>
+    <div id="map" class="h-1/2  w-4/5"></div>
+
+    <div id="letterModal" class="hidden fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+        <div id="letterContent" class="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full mx-4 text-center">
+            <p id="contentText" class="font-semibold text-xl"></p>
+            <button onclick="closeModal()" class="mt-4 bg-red-500 text-white p-2 rounded">Kapat</button>
+        </div>
+    </div>
+    </div>
+
+<script src="./../Public/letterMap.js"></script>
+</body>
+</html>

@@ -1,28 +1,22 @@
-const Letter = require('./../Models/letter');
-const getCountryFromIP = require('./../utils/getCountry');
+const Letter= require('./../Models/letter');
 
-const createLetter = async (req, res) => {
-  try {
-    const {  content } = req.body;
-    if ( !content) {
-      return res.status(400).json({ message: "Başlık ve içerik zorunludur." });
-    }
 
-    // Kullanıcının IP adresini al
-    const ip = req.headers['x-forwarded-for']?.split(',')[0] || req.socket.remoteAddress;
-    console.log("Kullanıcının IP adresi:", ip); // 🔍 Bunu terminalde kontrol et!
-    
-    const country = await getCountryFromIP(ip);
+// Yeni mektup kaydetme fonksiyonu
+exports.createLetter=async(req,res)=>{
+  try{
+     const { message,email,visibility,deliveryTime}=req.body;
+  
+  // Mektubu kaydet
+  const newLetter=new Letter({
+    message,
+    email,
+    visibility,
+    deliveryTime:new Date(deliveryTime),
 
-    // Yeni mektubu oluştur
-    const newLetter = new Letter({  content, country });
-    await newLetter.save();
-
-    res.status(201).json(newLetter);
-  } catch (error) {
-    console.error("Mektup kaydedilirken hata oluştu:", error);
-    res.status(500).json({ message: "Mektup kaydedilemedi." });
+  });
+   await newLetter.save();
+   res.status(201).json({ success: true, message: "Mektup başarıyla kaydedildi!" });
+}catch (error) {
+    res.status(500).json({ success: false, message: "Bir hata oluştu." });
   }
 };
-
-module.exports = createLetter ;

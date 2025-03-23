@@ -4,10 +4,92 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="./output.css" rel="stylesheet">
+  <script>
+    // Dropdown menüyü açma ve kapama işlevi
+    function toggleDropdown() {
+        const dropdown = document.getElementById("profileDropdown");
+        dropdown.classList.toggle("hidden");
+    }
+
+    // Dropdown menüsünü kapatma
+    function closeDropdown(event) {
+        const dropdown = document.getElementById("profileDropdown");
+        const button = document.getElementById("profileButton");
+
+        // Eğer dropdown menü veya butona tıklanmadıysa, menüyü kapat
+        if (!dropdown.contains(event.target) && !button.contains(event.target)) {
+            dropdown.classList.add("hidden");
+        }
+    }
+
+    // Sayfanın herhangi bir yerine tıklanıldığında closeDropdown fonksiyonunu çalıştır
+    document.addEventListener('click', closeDropdown);
+
+    function loadContent(content) {
+        const contentArea = document.getElementById("profileContent");
+        document.getElementById("profileContent").remove(" hidden");
+        switch(content) {
+            case 'sustainability':
+                contentArea.innerHTML = '<h2>Sustainability Values</h2><p>Your sustainability data and form will go here.</p>';
+                break;
+            case 'letters':
+                contentArea.innerHTML = '<h2>Your Letters</h2><p>Your letters and their status will be listed here.</p>';
+                break;
+            case 'logout':
+                contentArea.innerHTML = '<h2>Logout</h2><p>You are logged out.</p>';
+                // Burada çıkış işlemi yapılabilir
+                break;
+            default:
+                contentArea.innerHTML = '<h2>Welcome to your profile!</h2>';
+        }
+    }
+</script>
 </head>
-<body>
-  <h1 class="text-3xl   text-amber-600 font-bold underline">
-    Hello world!
-  </h1>
+<body >
+  <header class="w-full h-1/6  space-x-36 top-0 left-0 z-50 flex mt-0 items-start bg-[#52ba31] mb-5">
+    <div class="w-1/2 space-x-8 flex items-start">
+    <a href="/home"class="font-rockSalt  tracking-normal text-white  text-2xl font-extrabold pl-2">LetterTo2050</a>
+    <a href="./../View/letter.html" class="text-white text-lg  underline underline-offset-4 hover:text-gray-300">
+        <i class="fas fa-pen"></i>
+        <span>Write to future</span>
+    </a>
+    <a href="/home" class="text-white text-lg  underline underline-offset-4 hover:text-gray-300">
+        <i class="fas fa-book-open"></i>
+        <span>Read Public Letters</span>
+    </a>
+
+
+</div>
+    <div class=" w-3/5 flex space-x-6 justify-end items-start pr-3">
+        <a href="/home" class="text-white hover:text-gray-300">Home</a>
+        <a href="/about" class="text-white hover:text-gray-300">About</a>
+        <a href="/quiz" class="text-white hover:text-gray-300">Quiz</a>
+        <a href="/letters" class="text-white hover:text-gray-300">Letters</a>
+    <!-- Eğer kullanıcı giriş yapmışsa, Login butonu yerine email adresini göster -->
+
+        <!-- Profilim Butonu -->
+        <div class="relative inline-block text-left ">
+            <button id="profileButton" onclick="toggleDropdown()" class="h-full bg-orange-500 bg text-white text-center pb-2 pt-1 px-3 rounded-lg">
+             Your Profile
+            </button>
+
+            <!-- Dropdown Menüsü -->
+            <div id="profileDropdown" class="hidden absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-lg py-2">
+                <a href="./../View/sustainability.html" onclick="loadContent('sustainability')" class="block px-4 py-1 text-gray-700 hover:bg-gray-300">Sustainability Values</a>
+                <a href="#" onclick="loadContent('letters')" class="block px-4 py-2 text-gray-700 hover:bg-gray-300">Your Letters</a>
+                <a href="#" onclick="loadContent('logout')" class="block px-4 py-2 text-gray-700 hover:bg-gray-300">Logout</a>
+            </div>
+        </div>
+
+        <!-- Profil İçeriği -->
+        <div id="profileContent" class="mt-6 hidden">
+            
+        </div>
+    </div>
+
+      </div>
+</header>
+
+
 </body>
 </html>

@@ -47,7 +47,7 @@ async function loadQuestions() {
  
 
     try {
-        const response = await fetch("http://127.0.0.1:3000/api/v1/questions/quiz");
+        const response = await fetch("http://127.0.0.1:3000/api/v1/question/quiz");
         const data = await response.json();
         const questions = data.questions;
         let currentQuestionIndex = 0;
