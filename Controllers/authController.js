@@ -3,7 +3,6 @@ const nodemailer = require('nodemailer');
 const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
 const session = require('express-session');
-const jwt = require('jsonwebtoken');
 
 const EMAIL = "letterto50@gmail.com";
 const EMAIL_PASS = "ieru yjoz hjje djqs";
