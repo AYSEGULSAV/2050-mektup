@@ -1,13 +1,12 @@
-let allLetters = []; // Tüm mektupları burada saklıyoruz
+let allLetters = []; 
 
-// Haritayı başlat
-const map = L.map('map').setView([39.9334, 32.8597], 6); // Türkiye
+
+const map = L.map('map').setView([39.9334, 32.8597], 6); 
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(map);
 
-// Mektupları API'den al
 fetch('http://127.0.0.1:3000/api/v1/letterMap')
     .then(response => response.json())
     .then(letters => {
@@ -25,12 +24,10 @@ fetch('http://127.0.0.1:3000/api/v1/letterMap')
             letterGroups[position].push(letter);
         });
 
-        // Marker ekleme işlemi
         for (let position in letterGroups) {
             const [lat, lng] = position.split(',').map(Number);
             const marker = L.marker([lat, lng]).addTo(map);
 
-            // Popup içeriği
             marker.bindPopup(
                 `<div class="popup-content w-[400px] h-[300px] overflow-y-auto p-4" data-position="${position}"></div>`,
                 { maxWidth: 500 }
@@ -55,7 +52,7 @@ fetch('http://127.0.0.1:3000/api/v1/letterMap')
 
                 popupContent.innerHTML = groupMessages;
 
-                // Buton event ekleme
+              
                 setTimeout(() => {
                     document.querySelectorAll(".viewLetterBtn").forEach(button => {
                         button.addEventListener("click", (event) => {
@@ -69,7 +66,6 @@ fetch('http://127.0.0.1:3000/api/v1/letterMap')
     })
     .catch(err => console.error("Mektuplar alınamadı:", err));
 
-// Ülke ismine göre koordinatlar
 function getCoordinatesForCountry(country) {
     const countryCoords = {
         'Türkiye': { lat: 39.9334, lng: 32.8597 },
@@ -79,15 +75,14 @@ function getCoordinatesForCountry(country) {
     return countryCoords[country] || { lat: 0, lng: 0 };
 }
 
-// Mektubu popup'da göster
+
 function showLetterContent(index, button, marker, letterGroup) {
     const letter = allLetters[index];
     if (!letter) return;
 
-    // "Tamamını Gör" butonunu, mesajın tamamını göstermek için değiştirelim
+
     const popupContent = button.closest('.popup-content');
-    
-    // Popup içeriğini değiştirelim
+
     popupContent.innerHTML = `
         <div class="message-item p-4">
             <b class="text-lg">${letter.country}</b><br>
@@ -99,7 +94,7 @@ function showLetterContent(index, button, marker, letterGroup) {
         </div>
     `;
 
-    // "Kapat" butonuna event ekleyelim
+
     setTimeout(() => {
         document.querySelectorAll(".closeLetterBtn").forEach(button => {
             button.addEventListener("click", () => {
@@ -109,9 +104,8 @@ function showLetterContent(index, button, marker, letterGroup) {
     }, 100);
 }
 
-// Popup'ı eski haline döndürelim
 function closeLetterContent(marker, letterGroup) {
-    // Popup içeriğini eski haline getirelim
+
     const groupMessages = letterGroup.map((letter, index) => {
         const realIndex = allLetters.findIndex(l => l.content === letter.content);
 
@@ -132,10 +126,8 @@ function closeLetterContent(marker, letterGroup) {
         </div>
     `);
 
-    // Popup'ı tekrar açalım
     marker.openPopup();
 
-    // Butonları tekrar ekleyelim
     setTimeout(() => {
         document.querySelectorAll(".viewLetterBtn").forEach(button => {
             button.addEventListener("click", (event) => {

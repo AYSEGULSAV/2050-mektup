@@ -1,46 +1,68 @@
-const { use } = require('../Routers/userRouters');
+
 const SustainabilityData = require('./../Models/sustainability');
 
-// Verileri kaydetme
-exports.saveSustainabilityData = async (req, res) => {
-    const { carbonFootprint, electricityUsage, waterUsage, recyclingRate, renewableEnergyUsage, foodWaste } = req.body;
-    const userEmail = req.session.email;
-    console.log('Sessionmail:',userEmail );
-
-    if (!userEmail) {
-        return res.status(401).send("Please log in first.");
+exports.saveOrUpdateSustainabilityData = async (req, res) => {
+    if (!req.session.email) {
+        return res.status(401).json({ message: "Unauthorized. Please log in." });
     }
 
-    const newSustainabilityData = new SustainabilityData({
-        userEmail,
-        carbonFootprint,
-        electricityUsage,
-        waterUsage,
-        recyclingRate,
-        renewableEnergyUsage,
-        foodWaste,
-    });
+    const userEmail = req.session.email;
+    const { RecycledWaste, FuelConsumption, ElectricityConsumption, ShowerTime, MeatConsumption, ClothesPurchasing } = req.body;
+
+    if (
+        RecycledWaste === undefined || 
+        FuelConsumption === undefined || 
+        ElectricityConsumption === undefined || 
+        ShowerTime === undefined || 
+        MeatConsumption === undefined || 
+        ClothesPurchasing === undefined
+    ) {
+        return res.status(400).json({ message: "All fields are required." });
+    }
 
     try {
-        await newSustainabilityData.save();
-        res.status(201).send("Sustainability data saved!");
+      
+        const updatedData = await SustainabilityData.findOneAndUpdate(
+            { userEmail }, 
+            { 
+                RecycledWaste,
+                FuelConsumption,
+                ElectricityConsumption,
+                ShowerTime,
+                MeatConsumption,
+                ClothesPurchasing,
+                createdAt: new Date() 
+            },
+            { new: true, upsert: true } 
+        );
+
+        res.status(200).json({ message: "Data saved successfully.", data: updatedData });
     } catch (error) {
-        res.status(500).send("Error saving sustainability data.");
+        console.error("Error saving/updating sustainability data:", error);
+        res.status(500).json({ message: "Error saving/updating sustainability data.", error });
     }
 };
 
-// Kullanıcının verilerini alma
-exports.getSustainabilityData = async (req, res) => {
-    const userEmail = req.session.email;
 
-    if (!userEmail) {
-        return res.status(401).send("Please log in first.");
+
+
+exports.getSustainabilityData = async (req, res) => {
+    if (!req.session.email) {
+        return res.status(401).json({ message: "Unauthorized. Please log in." });
     }
+
+    const userEmail = req.session.email;
 
     try {
         const data = await SustainabilityData.find({ userEmail }).sort({ createdAt: -1 });
-        res.status(200).json(data);
+
+        if (!data || data.length === 0) {
+            return res.status(200).json({ message: "No sustainability data found.", data: [] });
+        }
+
+        res.status(200).json({ message: "Sustainability data fetched successfully.", data });
     } catch (error) {
-        res.status(500).send("Error fetching sustainability data.");
+        console.error("Error fetching sustainability data:", error);
+        res.status(500).json({ message: "Error fetching sustainability data.", error });
     }
 };

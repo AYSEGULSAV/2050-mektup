@@ -1,23 +1,22 @@
 const nodemailer = require('nodemailer');
 
-// Gmail ile SMTP bağlantısı oluşturma
+
 const transporter = nodemailer.createTransport({
-  service: 'gmail', // Gmail servisini kullanıyoruz
+  service: 'gmail',
   auth: {
-    user: 'letterto50@gmail.com',  // Gönderen e-posta adresiniz
-    pass:'ieru yjoz hjje djqs'        // Gmail uygulama şifreniz
+    user: 'letterto50@gmail.com',  
+    pass:'ieru yjoz hjje djqs'        
   }
 });
 
-// E-posta içeriği
 const mailOptions = {
-  from: 'letterto50@gmail.com',  // Gönderen e-posta adresi
-  to: 'aysefat9@gmail.com',  // Alıcı e-posta adresi
-  subject: 'Test E-postası',  // E-posta konusu
-  text: 'Merhaba, bu bir test e-postasıdır.'  // E-posta içeriği
+  from: 'letterto50@gmail.com',  
+  to: 'aysefat9@gmail.com',  
+  subject: 'Test E-postası',  
+  text: 'Merhaba, bu bir test e-postasıdır.'  
 };
 
-// E-posta gönderme
+
 transporter.sendMail(mailOptions, (error, info) => {
   if (error) {
     console.log('Hata:', error);

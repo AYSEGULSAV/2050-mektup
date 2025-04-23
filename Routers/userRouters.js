@@ -4,10 +4,12 @@ const questionController=require("./../Controllers/questionController");
 const letterMapController=require("./../Controllers/letterMapController")
 const letterController=require('./../Controllers/letterController');
 const sustainabilityController=require('./../Controllers/sustainbilityController');
+const adminController=require('./../Controllers/adminController');
+const readController=require('./../Controllers/public lettersController');
 const { route } = require('../app');
 const session = require('express-session');
 const mongoose = require('mongoose');
-
+ const sustainabilityData=require("./../Models/sustainability");
 
 
 const router=express.Router();
@@ -15,47 +17,38 @@ const router=express.Router();
 
 
 
-// E-posta ile şifre gönderme
 router.post('/send-password', authController.sendPassword);
 router.post('/verify-password', authController.verifyPassword);
-
-router.post("/save-sustainability-data", (req, res) => {
-  // Eğer session'da email yoksa, yetkilendirilmemiş hata döndür.
-  if (!req.session.email) {
-    
-      return res.status(401).json({ message: "Unauthorized. Please log in." });
-  }
-
-  // Önce veritabanındaki veriyi alalım, eğer varsa
-  SustainabilityData.find({ userEmail: req.session.email })
-    .then(existingData => {
-      if (existingData.length > 0) {
-        // Eğer veriler zaten varsa, onları geri gönderelim
-        return res.json(existingData);
-      } else {
-        // Eğer veriler yoksa, yeni veri kaydedelim
-        sustainabilityController.saveSustainabilityData(req, res);
-      }
-    })
-    .catch(err => res.status(500).json({ message: "Error retrieving data.", error: err }));
-});
-
-
+router.post("/save-sustainability-data",sustainabilityController.saveOrUpdateSustainabilityData )
+  
 router.get("/get-sustainability-data", sustainabilityController.getSustainabilityData);
 
 
 
- router.post('/question/add-questions', questionController.addQuestions);
-// Sürdürülebilirlik verilerini kaydet
 
+
+ router.post('/question/add-questions', questionController.addQuestions);
+
+
+router.get('/logout',authController.logout);
 
 
 
  router.get('/question/quiz',questionController.getRandomQuestions);
 
- // Mektup kaydetme endpoint'i
+
 router.post('/send-letter', letterController.createLetter); 
+router.get('/check-session',letterController.checkSession)
  router.get('/letterMap',letterMapController.getLetters);
-                  
+     
+        
+
+ router.get('/admin/stats',adminController.getAdminStats);
+ 
+ router.post('/admin/send-letter',adminController.sendLetterToUser);
+
+ router.get('/public-letters',readController.getPublicLetters)
+ 
+
 
  module.exports =router;

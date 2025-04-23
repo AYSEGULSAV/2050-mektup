@@ -1,5 +1,7 @@
 const app = require('./app');
 const mongoose = require('mongoose'); 
+require('./Public/cronJob'); 
+
 const dotenv = require('dotenv');
 dotenv.config({ path: './config.env' });
 

@@ -1,7 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-    './src/**/*.{html,js}', // HTML ve JS dosyalarındaki Tailwind sınıflarını hedef al
+    './src/**/*.{html,js}',
   ],
   theme: {
     extend: {

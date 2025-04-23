@@ -25,13 +25,13 @@
         const resultBox=document.getAnimations("result-box");
         const scoreText=document.getElementById("score-text");
         const badgeText=document.getElementById("bagde-text");
-           // Rozetleri HTML'den al
+    
         const bronzeBadge = document.getElementById("bronze-badge");
         const silverBadge = document.getElementById("silver-badge");
         const goldBadge = document.getElementById("gold-badge");
 
         
-    // Önceki ve Sonraki Butonları
+
         const navigationButtons = document.getElementById("navigation-buttons");
         const prevBtn = document.getElementById("prev-btn");
         const nextBtn = document.getElementById("next-btn");

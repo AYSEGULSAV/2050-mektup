@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Bekleyen Mektuplar</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50">
+  <div class="container mx-auto p-4">
+    <h1 class="text-2xl font-bold mb-4">Bekleyen Mektuplar</h1>
+    <table class="table-auto w-full">
+      <thead>
+        <tr><th>Önizleme</th><th>Email</th><th>Gönder</th></tr>
+      </thead>
+      <tbody id="pendingTable"></tbody>
+    </table>
+  </div>
+
+  <script>
+
+    async function loadPendingLetters() {
+      const res = await fetch('http://127.0.0.1:3000/api/v1/admin/stats');
+      const data = await res.json();
+      const tbody = document.getElementById('pendingTable');
+      tbody.innerHTML = '';
+      data.pendingMessages.forEach(msg => {
+        tbody.innerHTML += `
+          <tr>
+            <td class="border px-4 py-2">${msg.message.substring(0, 100)}...</td>
+            <td class="border px-4 py-2">${msg.email}</td>
+            <td class="border px-4 py-2">
+              <button class="bg-green-500 text-white px-4 py-1 rounded" onclick="sendLetter('${msg._id}', '${msg.email}')">Gönder</button>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+
+    async function sendLetter(letterId, email) {
+      const res = await fetch('http://127.0.0.1:3000/api/v1/admin/send-letter', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ letterId, email })
+      });
+      const result = await res.json();
+      if (result.success) {
+        alert('Mektup gönderildi.');
+        loadPendingLetters(); 
+      } else {
+        alert('Gönderim başarısız.');
+      }
+    }
+
+    window.onload = loadPendingLetters;
+  </script>
+</body>
+</html>

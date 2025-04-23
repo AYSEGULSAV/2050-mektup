@@ -1,34 +1,25 @@
 document.getElementById("sendButton").addEventListener("click", async function(event) {
     event.preventDefault();
 
-    // Kullanıcı giriş yapmış mı? (localStorage yerine backend doğrulaması ekleyelim)
-    const token = localStorage.getItem("token"); // Kullanıcı giriş yaptıysa token'ı burada saklıyoruz.
-
-    if (!token) {
-        alert("Please log in to send a letter.");
-        window.location.href = "./../View/login.html"; // Kullanıcı giriş yapmamışsa yönlendirme
-        return;s
-    }
-
     try {
-        // Kullanıcının token'ını backend'e gönderip doğrulayalım
-        const authResponse = await fetch('http://127.0.0.1:3000/api/v1/check-auth', {
+        
+        const authResponse = await fetch('http://127.0.0.1:3000/api/v1/check-session', {
             method: 'GET',
             credentials: 'include', 
-            headers: { 
-                'Authorization': `Bearer ${token}`,  // Token'ı header içinde gönderiyoruz
+            headers: {
                 'Content-Type': 'application/json'
             }
         });
+        const authData = await authResponse.json();
+        console.log("Auth Data:", authData);
 
-        if (!authResponse.ok) {
-            alert("Session expired. Please log in again.");
-            localStorage.removeItem("token"); // Geçersiz token'ı temizleyelim
-            window.location.href = "./../View/letter.html";
+       
+        if (!authResponse.ok || !authData.success || !authData.user) {
+            alert("Lütfen giriş yapın!");
+            window.location.href = "./../View/login.html"; 
             return;
         }
-
-        // Kullanıcı doğrulandıysa mektup gönderme işlemi devam etsin
+       
         const message = document.getElementById("message")?.value.trim();
         const email = document.getElementById("emailInput")?.value.trim();
         const deliveryTimeInput = document.querySelector('input[name="deliveryTime"]:checked');
@@ -51,18 +42,27 @@ document.getElementById("sendButton").addEventListener("click", async function(e
             return;
         }
 
-        const deliveryTime = deliveryTimeInput.value;
-        const visibility = visibilityInput.value;
+const currentDate = new Date();
+const deliveryValue = deliveryTimeInput.value;
 
-        // Mektubu backend'e kaydet
+    
+if (deliveryValue === '2050') {
+    currentDate.setFullYear(2050);
+} else {
+    currentDate.setFullYear(currentDate.getFullYear() + parseInt(deliveryValue));
+}
+
+const formattedDate = currentDate.toISOString();
+const visibility = visibilityInput.value;
+
+      
         const response = await fetch('http://127.0.0.1:3000/api/v1/send-letter', {
             method: 'POST',
             credentials: 'include', 
             headers: { 
-                'Authorization': `Bearer ${token}`, // Kullanıcı doğrulandı, token'ı yine ekleyelim
                 'Content-Type': 'application/json' 
             },
-            body: JSON.stringify({ message, email, visibility, deliveryTime }),
+            body: JSON.stringify({ message, email, visibility, deliveryTime: formattedDate  }),
         });
 
         if (!response.ok) {

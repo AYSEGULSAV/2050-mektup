@@ -1,6 +1,5 @@
 const question=require('./../Models/questions');
 
-  //Soruları veritabanına kaydetme fonksiyonu
 
 exports.addQuestions=async(req,res)=>{
     const questions = [

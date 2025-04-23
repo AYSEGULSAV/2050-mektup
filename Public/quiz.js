@@ -29,12 +29,12 @@ async function loadQuestions() {
     const scoreText = document.getElementById("score-text");
     const badgeText = document.getElementById("badge-text");
 
-    // Rozetleri HTML'den al
+
     const bronzeBadge = document.getElementById("bronze-badge");
     const silverBadge = document.getElementById("silver-badge");
     const goldBadge = document.getElementById("gold-badge");
 
-    // Önceki ve Sonraki Butonları
+
     const navigationButtons = document.getElementById("navigation-buttons");
     const prevBtn = document.getElementById("prev-btn");
     const nextBtn = document.getElementById("next-btn");
@@ -56,7 +56,7 @@ async function loadQuestions() {
 
         showQuestion(currentQuestionIndex);
 
-         // İlk sorudan sonra butonları aç
+ 
         
             navigationButtons.style.display = "flex";
        
@@ -64,8 +64,7 @@ async function loadQuestions() {
         function showQuestion(index) {
             const question = questions[index];
             const questionText = document.getElementById("question-text");
-            optionsBox.innerHTML = ""; // Önceki şıkları temizle
-
+            optionsBox.innerHTML = ""; 
             questionText.innerText = question.questionText;
 
             question.options.forEach((option, i) => {
@@ -73,33 +72,31 @@ async function loadQuestions() {
                 optionButton.classList.add('bg-amber-800', 'hover:bg-amber-900', 'w-full', 'py-2', 'rounded', 'transition', 'duration-300');
                 optionButton.innerText = option;
 
-                // Önceden seçilen şıkkı göster
                 if (selectedAnswers[index] === option) {
                     optionButton.classList.remove("bg-amber-700");
                     optionButton.classList.add("border-4", "border-black");
                 }
 
                 optionButton.onclick = () => {
-                    // Tüm seçeneklerin rengini sıfırla
+                  
                     document.querySelectorAll("#options button").forEach(btn => {
                         btn.classList.remove("border-4", "border-black");
                         btn.classList.add("bg-amber-700");
                     });
 
-                    // Seçilen şık için belirgin bir stil ekleyelim
                     optionButton.classList.remove("bg-amber-700");
                     optionButton.classList.add( "border-4", "border-black");
 
-                    // Seçimi kaydet
+   
                     selectedAnswers[index] = option;
                 };
 
                 optionsBox.appendChild(optionButton);
             });
 
-            // Önceki butonu ilk sorudaysa gizle
+            
             prevBtn.style.display = index === 0 ? "none" : "inline-block";
-            // Sonraki butonu son sorudaysa "Bitti" olarak değiştir
+
             nextBtn.innerText = index === questions.length - 1 ? "Bitti" : "Sonraki";
         }
 
@@ -120,7 +117,7 @@ async function loadQuestions() {
         });
 
         function finishQuiz() {
-            // Skoru hesapla
+       
             score = selectedAnswers.reduce((acc, answer, index) => {
                 return answer === questions[index].correctAnswer ? acc + 1 : acc;
             }, 0);
@@ -132,7 +129,7 @@ async function loadQuestions() {
             scoreText.innerText = `Toplam Doğru Sayısı: ${score} / ${questions.length}`;
 
 
-            // Skora göre uygun rozeti göster
+
             if (score >= 10 && score < 15) {
                 badgeText.innerText = "Tebrikler! Bronz Rozet Kazandınız ";
                 bronzeBadge.classList.remove("hidden");
@@ -146,18 +143,18 @@ async function loadQuestions() {
                 badgeText.innerText = "Maalesef rozet kazanamadınız. Daha fazla pratik yapmalısınız!";
             }
 
-            // Anasayfaya Dön Butonu
+
             const homeButton = document.createElement("button");
             homeButton.innerText = "🏠 Anasayfaya Dön";
             homeButton.classList.add("bg-green-700", "text-black","font-bold", "px-4", "py-2", "rounded", "mt-4");
-            homeButton.onclick = () => window.location.href = "index.html";
+            homeButton.onclick = () => window.location.href = "./../View/HomePage.html";
             resultBox.appendChild(homeButton);
         }
 
     } catch (error) {
         console.error("Sorular yüklenirken hata oluştu:", error);
         const errorBox = document.getElementById("error-box");
-        errorBox.classList.remove("hidden"); // Hata olduğunda göster
+        errorBox.classList.remove("hidden"); 
 
     }
 }

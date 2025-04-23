@@ -3,13 +3,13 @@
 const fetchData = (url) => {
     return fetch(url, {
       method: 'GET',
-      credentials: 'include',  // Cookie'lerin frontend'e gönderilmesi için gerekli
+      credentials: 'include',  
     })
       .then(response => response.json())
       .then(data => data)
       .catch(error => {
         console.error('Error:', error);
-        return null;  // Hata durumunda null döndürüyoruz
+        return null;  
       });
   };
   
