@@ -40,56 +40,102 @@
             </p>
 
      
-            <div id="publicLettersContainer" class="space-y-6">
-         
+            <div id="publicLettersContainer" class="space-y-6 ">
+                
             </div>
+            <div id="pagination" class="flex justify-between mt-6"></div>
         </div>
     </div>
     <script>
-        
+        let currentPage = 1;
+        const messagesPerPage = 6;
+        let allLetters = [];
+    
+        function renderLetters() {
+            const lettersContainer = document.getElementById('publicLettersContainer');
+            lettersContainer.innerHTML = '';
+    
+            const start = (currentPage - 1) * messagesPerPage;
+            const end = start + messagesPerPage;
+            const currentLetters = allLetters.slice(start, end);
+    
+            currentLetters.forEach(letter => {
+                const letterElement = document.createElement('div');
+                letterElement.classList.add('p-6', 'bg-white', 'rounded-xl', 'shadow-lg', 'space-y-2', 'text-gray-700');
+    
+                const writtenDate = new Date(letter.createdAt).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+    
+                letterElement.innerHTML = `
+                        <div class="p-6 bg-white rounded-xl shadow-md border border-gray-100 transition transform hover:scale-105 hover:shadow-2xl hover:ring-2 hover:ring-emerald-300 duration-300 ease-in-out">
+                            <p class="text-gray-800 italic">"${letter.message}"</p>
+                            <p class="text-sm text-gray-500 mt-2">Written on: <span class="font-semibold text-emerald-700">${writtenDate}</span></p>
+                        </div>
+
+
+                `;
+    
+                lettersContainer.appendChild(letterElement);
+            });
+    
+            renderPagination();
+        }
+    
+        function renderPagination() {
+    const pagination = document.getElementById('pagination');
+    pagination.innerHTML = '';
+
+    const totalPages = Math.ceil(allLetters.length / messagesPerPage);
+
+    if (totalPages <= 1) return;
+
+    const prevButton = document.createElement('button');
+    prevButton.textContent = '⟨ Previous';
+    prevButton.className = "px-4 py-2 rounded shadow disabled:opacity-50 disabled:cursor-not-allowed";
+    prevButton.classList.add(currentPage === 1 ? 'bg-gray-200' : 'bg-white', 'hover:bg-gray-100');
+    prevButton.disabled = currentPage === 1;
+    prevButton.onclick = () => {
+        if (currentPage > 1) {
+            currentPage--;
+            renderLetters();
+        }
+    };
+
+    const nextButton = document.createElement('button');
+    nextButton.textContent = 'Next ⟩';
+    nextButton.className = "px-4 py-2 bg-white rounded shadow hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed";
+    nextButton.disabled = currentPage === totalPages;
+    nextButton.onclick = () => {
+        if (currentPage < totalPages) {
+            currentPage++;
+            renderLetters();
+        }
+    };
+
+    pagination.appendChild(prevButton);
+    pagination.appendChild(nextButton);
+}
+
+    
         fetch('http://127.0.0.1:3000/api/v1/public-letters')
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    const lettersContainer = document.getElementById('publicLettersContainer');
-                    data.letters.forEach(letter => {
-                        const letterElement = document.createElement('div');
-                        letterElement.classList.add('letter', 'p-4', 'bg-white', 'rounded-lg', 'shadow-lg');
-                        
-                        const formattedDate = new Date(letter.deliveryTime);
-                        const formattedDateString = formattedDate.toLocaleDateString('tr-TR', {
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric'
-                        });
-    
-                        letterElement.innerHTML = `
-                        <div class="letter-body">
-                            <p class="text-gray-800">${letter.message}</p>
-                
-                            </div>
-                        </div>
-                        `;
-    
-
-    
-             lettersContainer.appendChild(letterElement);
-                    });
+                    allLetters = data.letters.reverse(); // En son yazılanlar en üstte gözüksün
+                    renderLetters();
                 } else {
-                    const noLettersMessage = document.createElement('p');
-                    noLettersMessage.textContent = 'No public letters found.';
-                    noLettersMessage.classList.add('text-gray-500');
-                    document.getElementById('publicLettersContainer').appendChild(noLettersMessage);
+                    document.getElementById('publicLettersContainer').innerHTML = '<p class="text-gray-500">No public letters found.</p>';
                 }
             })
             .catch(error => {
                 console.error('Error fetching public letters:', error);
-                const errorMessage = document.createElement('p');
-                errorMessage.textContent = 'An error occurred while loading public letters.';
-                errorMessage.classList.add('text-red-500');
-                document.getElementById('publicLettersContainer').appendChild(errorMessage);
+                document.getElementById('publicLettersContainer').innerHTML = '<p class="text-red-500">An error occurred while loading public letters.</p>';
             });
     </script>
+    
 
 </body>
 </html>

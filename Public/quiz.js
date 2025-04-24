@@ -69,7 +69,7 @@ async function loadQuestions() {
 
             question.options.forEach((option, i) => {
                 const optionButton = document.createElement('button');
-                optionButton.classList.add('bg-amber-800', 'hover:bg-amber-900', 'w-full', 'py-2', 'rounded', 'transition', 'duration-300');
+                optionButton.classList.add('bg-gray-100', 'hover:bg-amber-900', 'w-full', 'py-2', 'rounded', 'transition', 'duration-300');
                 optionButton.innerText = option;
 
                 if (selectedAnswers[index] === option) {
@@ -97,7 +97,7 @@ async function loadQuestions() {
             
             prevBtn.style.display = index === 0 ? "none" : "inline-block";
 
-            nextBtn.innerText = index === questions.length - 1 ? "Bitti" : "Sonraki";
+            nextBtn.innerText = index === questions.length - 1 ? "Finished" : "Next";
         }
 
         nextBtn.addEventListener("click", () => {
@@ -126,26 +126,26 @@ async function loadQuestions() {
             document.getElementById("navigation-buttons").style.display = "none";
             resultBox.classList.remove("hidden");
 
-            scoreText.innerText = `Toplam Doğru Sayısı: ${score} / ${questions.length}`;
+            scoreText.innerText = `Total Number of Correct Answers: ${score} / ${questions.length}`;
 
 
 
             if (score >= 10 && score < 15) {
-                badgeText.innerText = "Tebrikler! Bronz Rozet Kazandınız ";
+                badgeText.innerText = "Congratulations! You've Earned a Bronze Badge ";
                 bronzeBadge.classList.remove("hidden");
             } else if (score >= 15 && score < 20) {
-                badgeText.innerText = "Tebrikler! Gümüş Rozet Kazandınız ";
+                badgeText.innerText = "Congratulations! You've Earned a Silver Badge ";
                 silverBadge.classList.remove("hidden");
             } else if (score === 20) {
-                badgeText.innerText = "Tebrikler! Altın Rozet Kazandınız ";
+                badgeText.innerText = "Congratulations! You've Won a Gold Badge ";
                 goldBadge.classList.remove("hidden");
             } else {
-                badgeText.innerText = "Maalesef rozet kazanamadınız. Daha fazla pratik yapmalısınız!";
+                badgeText.innerText = "Unfortunately, you did not earn a badge. You need to practice more!";
             }
 
 
             const homeButton = document.createElement("button");
-            homeButton.innerText = "🏠 Anasayfaya Dön";
+            homeButton.innerText = "🏠 Return to Home Page";
             homeButton.classList.add("bg-green-700", "text-black","font-bold", "px-4", "py-2", "rounded", "mt-4");
             homeButton.onclick = () => window.location.href = "./../View/HomePage.html";
             resultBox.appendChild(homeButton);
